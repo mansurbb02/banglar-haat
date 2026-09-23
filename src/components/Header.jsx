@@ -2,13 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingBag, Menu, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { useLang } from '../context/LanguageContext';
 import { getHaatEvent } from '../services/api';
 import { formatCountdown } from '../utils/haat';
 
 export default function Header() {
   const { itemCount } = useCart();
-  const { lang, toggle, isBn } = useLang();
   const [menuOpen, setMenuOpen] = useState(false);
   const [haat, setHaat] = useState(null);
   const [remaining, setRemaining] = useState('');
@@ -51,13 +49,12 @@ export default function Header() {
               justifyContent: 'center',
               gap: 8,
               fontSize: 12,
-              fontFamily: 'var(--font-en)',
             }}
           >
             <span className="live-dot" />
-            <span style={{ fontWeight: 600 }}>LIVE</span>
+            <span style={{ fontWeight: 600 }}>লাইভ</span>
             <span>·</span>
-            <span>{isBn ? 'শুক্রবারের হাট' : 'Friday Haat'}</span>
+            <span>শুক্রবারের হাট</span>
             <span>·</span>
             <span className="countdown">{remaining}</span>
           </div>
@@ -75,7 +72,7 @@ export default function Header() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <button
               onClick={() => setMenuOpen(true)}
-              aria-label="Menu"
+              aria-label="মেনু"
               style={{ display: 'flex', padding: 8 }}
               className="md-hide"
             >
@@ -84,8 +81,8 @@ export default function Header() {
             <Link to="/" style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 22, letterSpacing: '-0.02em' }}>
               LOCAL
             </Link>
-            <span style={{ fontSize: 10, color: 'var(--muted)', fontFamily: 'var(--font-en)', display: 'none' }} className="desktop-only">
-              Made in Bangladesh
+            <span style={{ fontSize: 10, color: 'var(--muted)', display: 'none' }} className="desktop-only">
+              বাংলাদেশে তৈরি
             </span>
           </div>
 
@@ -93,36 +90,18 @@ export default function Header() {
             className="desktop-nav"
             style={{ display: 'none', gap: 28, fontFamily: 'var(--font-heading)', fontSize: 15, fontWeight: 500 }}
           >
-            <Link to="/explore">{isBn ? 'অন্বেষণ' : 'Explore'}</Link>
-            <Link to="/friday-haat" style={{ color: 'var(--haat-accent)' }}>
-              {isBn ? 'শুক্রবারের হাট' : 'Friday Haat'}
-            </Link>
-            <Link to="/creators">{isBn ? 'নির্মাতারা' : 'Creators'}</Link>
-            <Link to="/become-a-creator">{isBn ? 'নির্মাতা হোন' : 'Become a Creator'}</Link>
-            <Link to="/about">{isBn ? 'আমাদের কথা' : 'About'}</Link>
+            <Link to="/explore">অন্বেষণ</Link>
+            <Link to="/friday-haat" style={{ color: 'var(--haat-accent)' }}>শুক্রবারের হাট</Link>
+            <Link to="/creators">নির্মাতারা</Link>
+            <Link to="/become-a-creator">নির্মাতা হোন</Link>
+            <Link to="/about">আমাদের কথা</Link>
           </nav>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <button
-              onClick={toggle}
-              style={{
-                fontSize: 12,
-                fontFamily: 'var(--font-en)',
-                color: 'var(--muted)',
-                padding: '6px 8px',
-              }}
-              aria-label="Switch language"
-            >
-              {lang === 'bn' ? 'EN' : 'বাং'}
-            </button>
-            <button
-              onClick={() => navigate('/search')}
-              aria-label="Search"
-              style={{ padding: 8 }}
-            >
+            <button onClick={() => navigate('/search')} aria-label="খুঁজুন" style={{ padding: 8 }}>
               <Search size={20} />
             </button>
-            <Link to="/cart" style={{ padding: 8, position: 'relative' }} aria-label="Cart">
+            <Link to="/cart" style={{ padding: 8, position: 'relative' }} aria-label="ঝুড়ি">
               <ShoppingBag size={20} />
               {itemCount > 0 && (
                 <span
@@ -140,7 +119,6 @@ export default function Header() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontFamily: 'var(--font-en)',
                   }}
                 >
                   {itemCount}
@@ -165,23 +143,23 @@ export default function Header() {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 40 }}>
             <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 22 }}>LOCAL</span>
-            <button onClick={() => setMenuOpen(false)} aria-label="Close">
+            <button onClick={() => setMenuOpen(false)} aria-label="বন্ধ করুন">
               <X size={24} />
             </button>
           </div>
           <nav style={{ display: 'flex', flexDirection: 'column', gap: 24, fontFamily: 'var(--font-heading)', fontSize: 22, fontWeight: 500 }}>
-            <Link to="/" onClick={() => setMenuOpen(false)}>{isBn ? 'হোম' : 'Home'}</Link>
-            <Link to="/explore" onClick={() => setMenuOpen(false)}>{isBn ? 'অন্বেষণ' : 'Explore'}</Link>
+            <Link to="/" onClick={() => setMenuOpen(false)}>হোম</Link>
+            <Link to="/explore" onClick={() => setMenuOpen(false)}>অন্বেষণ</Link>
             <Link to="/friday-haat" onClick={() => setMenuOpen(false)} style={{ color: 'var(--haat-accent)' }}>
-              {isBn ? 'শুক্রবারের হাট' : 'Friday Haat'}
+              শুক্রবারের হাট
             </Link>
-            <Link to="/creators" onClick={() => setMenuOpen(false)}>{isBn ? 'নির্মাতারা' : 'Creators'}</Link>
-            <Link to="/become-a-creator" onClick={() => setMenuOpen(false)}>{isBn ? 'নির্মাতা হোন' : 'Become a Creator'}</Link>
-            <Link to="/about" onClick={() => setMenuOpen(false)}>{isBn ? 'আমাদের কথা' : 'About'}</Link>
-            <Link to="/friday-haat/rules" onClick={() => setMenuOpen(false)}>{isBn ? 'হাটের নিয়ম' : 'Haat Rules'}</Link>
+            <Link to="/creators" onClick={() => setMenuOpen(false)}>নির্মাতারা</Link>
+            <Link to="/become-a-creator" onClick={() => setMenuOpen(false)}>নির্মাতা হোন</Link>
+            <Link to="/about" onClick={() => setMenuOpen(false)}>আমাদের কথা</Link>
+            <Link to="/friday-haat/rules" onClick={() => setMenuOpen(false)}>হাটের নিয়ম</Link>
           </nav>
           <div style={{ marginTop: 'auto', fontSize: 13, color: 'var(--muted)' }}>
-            Made in Bangladesh
+            বাংলাদেশে তৈরি
           </div>
         </div>
       )}
