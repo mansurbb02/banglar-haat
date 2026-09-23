@@ -3,11 +3,9 @@ import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import HaatCountdown from '../components/HaatCountdown';
 import { getHaatProducts, getOneOfOneProducts, getSmallBatchProducts, getCreators, getHaatEvent } from '../services/api';
-import { useLang } from '../context/LanguageContext';
 import { formatPrice } from '../utils/haat';
 
 export default function Home() {
-  const { isBn } = useLang();
   const [haatProducts, setHaatProducts] = useState([]);
   const [oneOfOne, setOneOfOne] = useState([]);
   const [smallBatch, setSmallBatch] = useState([]);
@@ -39,51 +37,43 @@ export default function Home() {
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
             <span className="live-dot" />
-            <span style={{ fontFamily: 'var(--font-en)', fontSize: 12, fontWeight: 600, letterSpacing: '0.06em' }}>
-              LIVE · FRIDAY HAAT
-            </span>
+            <span style={{ fontSize: 12, fontWeight: 600 }}>লাইভ · শুক্রবারের হাট</span>
           </div>
           <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(28px, 7vw, 52px)', fontWeight: 600, lineHeight: 1.15, marginBottom: 12, maxWidth: 640 }}>
-            {isBn ? 'শুক্রবারের হাট বসেছে।' : 'Friday Haat is open.'}
+            শুক্রবারের হাট বসেছে।
           </h1>
           <p style={{ fontSize: 16, opacity: 0.85, marginBottom: 24, maxWidth: 480 }}>
-            {isBn
-              ? 'নতুন কিছু, মাত্র ৫ ঘণ্টার জন্য। ১০–২০% Haat discount.'
-              : 'New local creations. 5 hours only. 10–20% Haat discount.'}
+            নতুন কিছু, মাত্র ৫ ঘণ্টার জন্য। ১০–২০% হাট ছাড়।
           </p>
           {haat?.status === 'ACTIVE' && (
             <div style={{ marginBottom: 28 }}>
-              <HaatCountdown endTime={haat.endTime} label={isBn ? 'হাট শেষ হবে' : 'Haat ends in'} />
+              <HaatCountdown endTime={haat.endTime} label="হাট শেষ হবে" />
             </div>
           )}
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 40 }}>
-            <Link to="/friday-haat" className="btn btn-haat">
-              {isBn ? 'হাটে ঢুকুন' : 'Enter the Haat'}
-            </Link>
+            <Link to="/friday-haat" className="btn btn-haat">হাটে ঢুকুন</Link>
             <Link to="/explore" className="btn btn-secondary" style={{ background: 'transparent', color: 'white', borderColor: 'rgba(255,255,255,0.3)' }}>
-              {isBn ? 'সব পণ্য দেখুন' : 'View all products'}
+              সব পণ্য দেখুন
             </Link>
           </div>
           {heroProduct && (
             <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12, padding: 16 }}>
               <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
-                <span className="badge badge-haat">Friday Haat</span>
-                <span className="badge badge-discount">{heroProduct.haatDiscount}% OFF</span>
+                <span className="badge badge-haat">শুক্রবারের হাট</span>
+                <span className="badge badge-discount">{heroProduct.haatDiscount}% ছাড়</span>
               </div>
-              <h3 style={{ fontSize: 20, marginBottom: 4, color: 'white' }}>
-                {isBn ? heroProduct.name : heroProduct.nameEn}
-              </h3>
+              <h3 style={{ fontSize: 20, marginBottom: 4, color: 'white' }}>{heroProduct.name}</h3>
               <p className="small" style={{ opacity: 0.7, marginBottom: 12 }}>{heroProduct.origin}</p>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 16 }}>
-                <span style={{ fontFamily: 'var(--font-en)', fontSize: 22, fontWeight: 600, color: 'var(--haat-accent)' }}>
+                <span style={{ fontSize: 22, fontWeight: 600, color: 'var(--haat-accent)' }}>
                   {formatPrice(heroProduct.haatPrice)}
                 </span>
-                <span style={{ fontFamily: 'var(--font-en)', fontSize: 14, textDecoration: 'line-through', opacity: 0.5 }}>
+                <span style={{ fontSize: 14, textDecoration: 'line-through', opacity: 0.5 }}>
                   {formatPrice(heroProduct.regularPrice)}
                 </span>
               </div>
               <Link to={`/product/${heroProduct.slug}`} className="btn btn-secondary" style={{ height: 44 }}>
-                {isBn ? 'দেখুন' : 'View'}
+                দেখুন
               </Link>
             </div>
           )}
@@ -92,10 +82,8 @@ export default function Home() {
 
       <section className="section">
         <div className="container">
-          <h2 style={{ marginBottom: 8 }}>{isBn ? 'এই সপ্তাহের হাট' : "This Week's Haat"}</h2>
-          <p className="text-muted" style={{ marginBottom: 24 }}>
-            {isBn ? 'মাত্র ৫ ঘণ্টার জন্য, নতুন সৃষ্টিগুলো ১০–২০% কম দামে।' : 'New creations at 10–20% off for 5 hours only.'}
-          </p>
+          <h2 style={{ marginBottom: 8 }}>এই সপ্তাহের হাট</h2>
+          <p className="text-muted" style={{ marginBottom: 24 }}>মাত্র ৫ ঘণ্টার জন্য, নতুন সৃষ্টিগুলো ১০–২০% কম দামে।</p>
           <div className="carousel">
             {haatProducts.map((p) => (
               <ProductCard key={p.id} product={p} variant="carousel" />
@@ -106,10 +94,8 @@ export default function Home() {
 
       <section className="section" style={{ background: 'var(--white)' }}>
         <div className="container">
-          <h2 style={{ marginBottom: 8 }}>{isBn ? 'একটাই তৈরি হয়েছে।' : 'Only one was made.'}</h2>
-          <p className="text-muted" style={{ marginBottom: 24 }}>
-            {isBn ? 'একই জিনিস আবার পাওয়া নাও যেতে পারে।' : 'You may never find the same piece again.'}
-          </p>
+          <h2 style={{ marginBottom: 8 }}>একটাই তৈরি হয়েছে।</h2>
+          <p className="text-muted" style={{ marginBottom: 24 }}>একই জিনিস আবার পাওয়া নাও যেতে পারে।</p>
           <div className="grid-products">
             {oneOfOne.map((p) => (
               <ProductCard key={p.id} product={p} />
@@ -120,10 +106,8 @@ export default function Home() {
 
       <section className="section">
         <div className="container">
-          <h2 style={{ marginBottom: 8 }}>{isBn ? 'অল্প করে বানানো। মন দিয়ে বানানো।' : 'Made in small numbers. Made with care.'}</h2>
-          <p className="text-muted" style={{ marginBottom: 24 }}>
-            {isBn ? '১০০টা নয়। ৫টা হলেও যথেষ্ট।' : 'Not a hundred. Even five is enough.'}
-          </p>
+          <h2 style={{ marginBottom: 8 }}>অল্প করে বানানো। মন দিয়ে বানানো।</h2>
+          <p className="text-muted" style={{ marginBottom: 24 }}>১০০টা নয়। ৫টা হলেও যথেষ্ট।</p>
           <div className="grid-products">
             {smallBatch.map((p) => (
               <ProductCard key={p.id} product={p} />
@@ -134,36 +118,34 @@ export default function Home() {
 
       <section className="section" style={{ background: 'var(--white)' }}>
         <div className="container">
-          <h2 style={{ marginBottom: 8 }}>{isBn ? 'বাংলাদেশের নতুন নির্মাতারা।' : "Bangladesh's new makers."}</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 16 }} className="creator-grid">
+          <h2 style={{ marginBottom: 8 }}>বাংলাদেশের নতুন নির্মাতারা।</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 16 }}>
             {creators.map((c) => (
               <Link key={c.id} to={`/creator/${c.id}`} className="card" style={{ padding: 16, display: 'flex', gap: 16, alignItems: 'center' }}>
                 <div style={{ width: 64, height: 64, borderRadius: 8, background: '#E8E4D9', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: 20, color: 'var(--muted)' }}>
-                  {(isBn ? c.name : c.nameEn)?.[0]}
+                  {c.name?.[0]}
                 </div>
                 <div>
-                  <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 600 }}>{isBn ? c.name : c.nameEn}</div>
-                  <div className="caption">{(isBn ? c.location : c.locationEn)} · {(isBn ? c.specialty : c.specialtyEn)}</div>
+                  <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 600 }}>{c.name}</div>
+                  <div className="caption">{c.location} · {c.specialty}</div>
                 </div>
               </Link>
             ))}
           </div>
           <div style={{ marginTop: 24 }}>
-            <Link to="/creators" className="btn btn-secondary">{isBn ? 'সব নির্মাতা দেখুন' : 'View all creators'}</Link>
+            <Link to="/creators" className="btn btn-secondary">সব নির্মাতা দেখুন</Link>
           </div>
         </div>
       </section>
 
       <section className="section" style={{ background: 'var(--primary-green)', color: 'white' }}>
         <div className="container" style={{ textAlign: 'center' }}>
-          <h2 style={{ color: 'white', marginBottom: 12 }}>
-            {isBn ? 'আপনি একটা বানিয়েছেন? সেটাও বিক্রি হবে।' : 'Made one piece? It can be sold too.'}
-          </h2>
+          <h2 style={{ color: 'white', marginBottom: 12 }}>আপনি একটা বানিয়েছেন? সেটাও বিক্রি হবে।</h2>
           <p style={{ opacity: 0.85, marginBottom: 28, maxWidth: 420, marginLeft: 'auto', marginRight: 'auto' }}>
-            {isBn ? 'বড় factory নেই? সমস্যা নেই।' : "No big factory? No problem."}
+            বড় factory নেই? সমস্যা নেই।
           </p>
           <Link to="/become-a-creator" className="btn" style={{ background: 'white', color: 'var(--primary-green)' }}>
-            {isBn ? 'Creator হিসেবে শুরু করুন' : 'Start as a Creator'}
+            নির্মাতা হিসেবে শুরু করুন
           </Link>
         </div>
       </section>
