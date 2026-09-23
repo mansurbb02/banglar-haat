@@ -1,14 +1,18 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext } from 'react';
 
 const LanguageContext = createContext(null);
 
+// সাইট সম্পূর্ণ বাংলায় — ভাষা পরিবর্তনের অপশন নেই
 export function LanguageProvider({ children }) {
-  const [lang, setLang] = useState('bn');
-
-  const toggle = () => setLang((l) => (l === 'bn' ? 'en' : 'bn'));
+  const value = {
+    lang: 'bn',
+    setLang: () => {},
+    toggle: () => {},
+    isBn: true,
+  };
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, toggle, isBn: lang === 'bn' }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   );
