@@ -61,10 +61,10 @@ export const origins = [
 
 export const suggestedSearches = [
   'মাটির কাজ',
-  'unique gift',
-  'handmade lamp',
+  'অনন্য উপহার',
+  'হাতে তৈরি প্রদীপ',
   'শীতল পাটি',
   'কাঠের কাজ',
-  'one of one',
+  'মাত্র একটা',
   'কুষ্টিয়ার কারুশিল্প',
 ];
