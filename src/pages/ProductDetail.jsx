@@ -1,0 +1,143 @@
+import { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { getProductBySlug, getProducts } from '../services/api';
+import { useCart } from '../context/CartContext';
+import { useLang } from '../context/LanguageContext';
+import { formatPrice } from '../utils/haat';
+import ProductCard from '../components/ProductCard';
+
+export default function ProductDetail() {
+  const { slug } = useParams();
+  const [product, setProduct] = useState(null);
+  const [related, setRelated] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart();
+  const { isBn } = useLang();
+  const [added, setAdded] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    getProductBySlug(slug).then((p) => {
+      setProduct(p);
+      setLoading(false);
+      if (p) {
+        getProducts({ category: p.category }).then((list) => {
+          setRelated(list.filter((x) => x.id !== p.id).slice(0, 4));
+        });
+      }
+    });
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="container" style={{ padding: '48px 16px', textAlign: 'center' }}>
+        <p className="text-muted">{isBn ? 'লোড হচ্ছে…' : 'Loading…'}</p>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="empty-state">
+        <h3>{isBn ? 'পণ্য পাওয়া যায়নি' : 'Product not found'}</h3>
+        <Link to="/explore" className="btn btn-primary">{isBn ? 'সব পণ্য দেখুন' : 'View all products'}</Link>
+      </div>
+    );
+  }
+
+  const handleAdd = () => {
+    addToCart(product);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
+  };
+
+  const qtyLabel =
+    product.productType === 'one-of-one'
+      ? (isBn ? 'মাত্র ১টি উপলব্ধ' : '1 of 1 available')
+      : (isBn ? product.availableQuantity + 'টি উপলব্ধ' : product.availableQuantity + ' available');
+
+  return (
+    <main style={{ paddingBottom: 80 }}>
+      <div style={{ aspectRatio: '1', background: '#E8E4D9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-en)', color: 'var(--muted)', fontSize: 14 }}>
+        {product.nameEn || product.name}
+      </div>
+
+      <div className="container" style={{ paddingTop: 24, paddingBottom: 32 }}>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
+          {product.isHaatActive && <span className="badge badge-haat">Friday Haat</span>}
+          {product.isHaatActive && <span className="badge badge-discount">{product.haatDiscount}% OFF</span>}
+          {product.productType === 'one-of-one' && <span className="badge badge-quantity">1 of 1</span>}
+          {product.isFragile && <span className="badge badge-fragile">{isBn ? 'ভঙ্গুর' : 'Fragile'}</span>}
+        </div>
+
+        <h1 style={{ fontSize: 24, marginBottom: 8 }}>{isBn ? product.name : product.nameEn}</h1>
+        <Link to={'/creator/' + product.creatorId} style={{ display: 'block', marginBottom: 4, fontSize: 14, color: 'var(--muted)' }}>
+          {(isBn ? product.creator?.name : product.creator?.nameEn) + ' · ' + product.origin}
+        </Link>
+        <p className="caption" style={{ marginBottom: 16 }}>{qtyLabel}</p>
+
+        <div style={{ marginBottom: 16 }}>
+          {product.isHaatActive ? (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
+                <span className="price-haat" style={{ fontSize: 28 }}>{formatPrice(product.haatPrice)}</span>
+                <span className="price-regular" style={{ fontSize: 16 }}>{formatPrice(product.regularPrice)}</span>
+              </div>
+              <p className="caption" style={{ marginTop: 4, color: 'var(--haat-accent)' }}>
+                {isBn ? 'শুক্রবারের হাট মূল্য' : 'Friday Haat price'}
+              </p>
+            </div>
+          ) : (
+            <span className="price-current" style={{ fontSize: 28 }}>{formatPrice(product.regularPrice)}</span>
+          )}
+        </div>
+
+        {product.isHaatActive && (
+          <div className="bg-soft-haat" style={{ padding: '12px 16px', borderRadius: 8, marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--haat-accent)' }}>
+              {isBn ? 'হাট শেষ হতে বাকি' : 'Haat ends in'}
+            </span>
+            <span className="countdown" style={{ color: 'var(--haat-accent)', fontSize: 18 }}>{product.countdown}</span>
+          </div>
+        )}
+
+        <div className="card" style={{ padding: 20, marginBottom: 24 }}>
+          <h3 style={{ fontSize: 16, marginBottom: 16 }}>{isBn ? 'এই পণ্যটির পরিচয়' : 'Product Passport'}</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 16px', fontSize: 14 }}>
+            <div><div className="caption">{isBn ? 'নির্মাতা' : 'Made by'}</div><div style={{ fontWeight: 500 }}>{isBn ? product.creator?.name : product.creator?.nameEn}</div></div>
+            <div><div className="caption">{isBn ? 'উৎস' : 'Origin'}</div><div style={{ fontWeight: 500 }}>{product.origin}, Bangladesh</div></div>
+            <div><div className="caption">{isBn ? 'উপকরণ' : 'Material'}</div><div style={{ fontWeight: 500 }}>{isBn ? product.material : product.materialEn}</div></div>
+            <div><div className="caption">{isBn ? 'পরিমাণ' : 'Quantity'}</div><div style={{ fontWeight: 500 }}>{product.productType === 'one-of-one' ? '1 of 1' : product.availableQuantity + ' available'}</div></div>
+          </div>
+        </div>
+
+        {product.story && (
+          <div style={{ marginBottom: 24 }}>
+            <h3 style={{ fontSize: 16, marginBottom: 8 }}>{isBn ? 'গল্প' : 'Story'}</h3>
+            <p style={{ color: 'var(--muted)', lineHeight: 1.7 }}>{product.story}</p>
+          </div>
+        )}
+
+        {related.length > 0 && (
+          <div style={{ marginTop: 40 }}>
+            <h3 style={{ marginBottom: 16 }}>{isBn ? 'আরও দেখুন' : 'You may also like'}</h3>
+            <div className="grid-products">
+              {related.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="sticky-cta">
+        <button className="btn btn-secondary" style={{ flex: 1 }} onClick={handleAdd}>
+          {added ? '✓' : (isBn ? 'কার্টে' : 'Cart')}
+        </button>
+        <button className="btn btn-haat" style={{ flex: 2 }} onClick={handleAdd}>
+          {isBn ? 'এখনই কিনুন' : 'Buy now'}
+        </button>
+      </div>
+    </main>
+  );
+}
