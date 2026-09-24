@@ -36,7 +36,7 @@ function isAuthenticMaker(product) {
   );
 }
 
-export default function ProductCard({ product, variant = 'tag', size = 'md' }) {
+export default function ProductCard({ product, variant = 'tag', size = null }) {
   if (!product) return null;
 
   const img = getProductImage(product);
@@ -45,9 +45,11 @@ export default function ProductCard({ product, variant = 'tag', size = 'md' }) {
       ? 'মাত্র ১টি'
       : `${product.availableQuantity}টি উপলব্ধ`;
 
+  // Fixed width ONLY when size is passed (carousel / stall-scroll).
+  // Grid usage must stay width:100% so CSS gap controls spacing.
   const widths = { sm: 200, md: 220, lg: 240, xl: 280 };
-  const w = widths[size] || 220;
-  const isCarousel = ['sm', 'md', 'lg', 'xl'].includes(size);
+  const isCarousel = size != null && Object.prototype.hasOwnProperty.call(widths, size);
+  const w = isCarousel ? widths[size] : undefined;
 
   if (variant === 'editorial') {
     return (
@@ -87,7 +89,7 @@ export default function ProductCard({ product, variant = 'tag', size = 'md' }) {
     <Link
       to={`/product/${product.slug}`}
       className="pcard pcard--tag"
-      style={{ width: isCarousel ? w : '100%', minWidth: isCarousel ? w : undefined }}
+      style={isCarousel ? { width: w, minWidth: w } : { width: '100%', minWidth: 0 }}
     >
       <div className="pcard-img" style={{ background: FALLBACK_BG }}>
         <SafeImg src={img} alt={product.name} />
