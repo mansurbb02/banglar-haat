@@ -258,12 +258,10 @@ export default function Home() {
           <p className="section-label">হাটের গলি ০২</p>
           <h2 className="display-md" style={{ marginBottom: 8 }}>অল্প করে বানানো।</h2>
           <p className="text-muted" style={{ marginBottom: 32, maxWidth: 360 }}>১০০টা নয়। ৫টা হলেও যথেষ্ট।</p>
-          <div className="stall-scroll" style={{ paddingLeft: 0, paddingRight: 0, margin: '0 -16px' }}>
-            <div style={{ width: 16, flexShrink: 0 }} />
+          <div className="stall-scroll">
             {smallBatch.map((p, i) => (
               <ProductCard key={p.id} product={p} variant={i % 2 === 0 ? 'creator' : 'tag'} size="md" />
             ))}
-            <div style={{ width: 16, flexShrink: 0 }} />
           </div>
         </div>
       </section>
