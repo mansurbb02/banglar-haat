@@ -1,43 +1,56 @@
-// Editorial photography for LOCAL Digital Haat
-// Documentary + tactile + South Asian craft aesthetic
+// Editorial photography — verified working Unsplash URLs (2026)
+
+const u = (id, w = 1000) =>
+  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
 
 export const IMG = {
-  // Hero — market / haat atmosphere
-  hero: 'https://images.unsplash.com/photo-1555529902-526109615282?w=1600&q=80',
+  // Market / haat atmosphere
+  hero: u('1533900298318-6b8da08a523e', 1600),
+  marketClose: u('1472851294608-062f824d29cc', 1200),
+  textilesMarket: u('1542838132-92c53300491e', 1200),
+
   // Hands / craft process
-  handsClay: 'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=1200&q=80',
-  handsPottery: 'https://images.unsplash.com/photo-1493106641515-6ad81aba2a0c?w=1200&q=80',
+  handsClay: u('1452860606245-08befc0ff44b', 1200),
+  handsPottery: u('1610701596061-2ecf227e85b2', 1200),
+
   // Product still life
-  terracotta: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=1000&q=80',
-  ceramics: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe511?w=1000&q=80',
-  wood: 'https://images.unsplash.com/photo-1611486212557-88be5ff6f941?w=1000&q=80',
-  textile: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=1000&q=80',
-  fabric: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1000&q=80',
-  bamboo: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=1000&q=80',
-  baskets: 'https://images.unsplash.com/photo-1488459716781-31db52582b45?w=1000&q=80',
-  brass: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=1000&q=80',
+  terracotta: u('1578749556568-bc2c40e68b61', 1000),
+  ceramics: u('1610701596061-2ecf227e85b2', 1000),
+  wood: u('1611486212557-88be5ff6f941', 1000),
+  textile: u('1620799140408-edc6dcb6d633', 1000),
+  fabric: u('1558618666-fcd25c85cd64', 1000),
+  bamboo: u('1598300042247-d088f8ab3a91', 1000),
+  baskets: u('1578662996442-48f60103fc96', 1000),
+  brass: u('1610701596007-11502861dcfa', 1000),
+
   // Workshop / artisan
-  workshop: 'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=1400&q=80',
-  artisan: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe511?w=1400&q=80',
+  workshop: u('1452860606245-08befc0ff44b', 1400),
+  artisan: u('1581783898377-1c85bf937427', 1400),
+
   // Landscape
-  rural: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1400&q=80',
-  hills: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1400&q=80',
-  // Market detail
-  marketClose: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=1200&q=80',
-  textilesMarket: 'https://images.unsplash.com/photo-1555529902-526109615282?w=1200&q=80',
+  rural: u('1500382017468-9049fed747ef', 1400),
+  hills: u('1464822759023-fed622ff2c3b', 1400),
+
+  // Extra variety
+  market2: u('1441986300917-64674bd600d8', 1200),
+  kitchen: u('1556909114-f6e7ad7d3136', 1000),
+  home: u('1513694203232-719a280e022f', 1000),
+  craft: u('1604719312566-8912e9227c6a', 1000),
+  pottery2: u('1601925260368-ae2f83cf8b7f', 1000),
 };
 
-// Map product id → image for consistency
+export const FALLBACK_BG = '#E8E4D9';
+
 export const productImages = {
   p1: IMG.terracotta,
   p2: IMG.brass,
   p3: IMG.textile,
   p4: IMG.ceramics,
   p5: IMG.fabric,
-  p6: IMG.ceramics,
+  p6: IMG.pottery2,
   p7: IMG.baskets,
   p8: IMG.bamboo,
-  p9: IMG.terracotta,
+  p9: IMG.kitchen,
   p10: IMG.wood,
   p11: IMG.textile,
   p12: IMG.bamboo,
