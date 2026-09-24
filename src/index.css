@@ -205,7 +205,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .stall-scroll--inset { padding-left: 0; padding-right: 0; }
 }
 
-/* One-of-one editorial grid */
 .oneof-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -497,4 +496,89 @@ footer a:hover { color: white; }
   .photo-content { padding: 32px 16px 40px; }
   .stall-feature-panel { padding: 20px 16px; }
   .display-xl { font-size: clamp(36px, 11vw, 56px); }
+}
+
+/* Process video + authenticity */
+.process-video {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 9 / 14;
+  position: relative;
+  border: none;
+  padding: 0;
+  overflow: hidden;
+  background: #E8E4D9;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 4px;
+}
+.process-video-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.process-video-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 35%, rgba(0,0,0,0.7));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 16px;
+  color: white;
+  gap: 12px;
+}
+.process-video-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.95);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+}
+.process-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.process-modal-inner {
+  background: var(--warm-white);
+  max-width: 400px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 8px;
+  position: relative;
+}
+.process-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  z-index: 2;
+  font-size: 28px;
+  color: white;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  line-height: 1;
+}
+.process-modal-media {
+  aspect-ratio: 9 / 14;
+  background: #111;
+  position: relative;
+  overflow: hidden;
 }
