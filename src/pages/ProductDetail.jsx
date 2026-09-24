@@ -4,6 +4,7 @@ import { getProductBySlug, getProducts } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/haat';
 import ProductCard from '../components/ProductCard';
+import { getProductImage } from '../data/images';
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -56,8 +57,8 @@ export default function ProductDetail() {
 
   return (
     <main style={{ paddingBottom: 80 }}>
-      <div style={{ aspectRatio: '1', background: '#E8E4D9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)', fontSize: 14 }}>
-        {product.name}
+      <div style={{ aspectRatio: '1', background: '#E8E4D9', position: 'relative', overflow: 'hidden' }}>
+        <img src={getProductImage(product)} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>
 
       <div className="container" style={{ paddingTop: 24, paddingBottom: 32 }}>
@@ -89,13 +90,13 @@ export default function ProductDetail() {
         </div>
 
         {product.isHaatActive && (
-          <div className="bg-soft-haat" style={{ padding: '12px 16px', borderRadius: 8, marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ padding: '12px 16px', borderRadius: 8, marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--soft-haat)' }}>
             <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--haat-accent)' }}>হাট শেষ হতে বাকি</span>
             <span className="countdown" style={{ color: 'var(--haat-accent)', fontSize: 18 }}>{product.countdown}</span>
           </div>
         )}
 
-        <div className="card" style={{ padding: 20, marginBottom: 24 }}>
+        <div style={{ padding: 20, marginBottom: 24, background: 'var(--white)', border: '1px solid var(--border)' }}>
           <h3 style={{ fontSize: 16, marginBottom: 16 }}>এই পণ্যটির পরিচয়</h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 16px', fontSize: 14 }}>
             <div><div className="caption">নির্মাতা</div><div style={{ fontWeight: 500 }}>{product.creator?.name}</div></div>
@@ -125,7 +126,7 @@ export default function ProductDetail() {
       </div>
 
       <div className="sticky-cta">
-        <button className="btn btn-secondary" style={{ flex: 1 }} onClick={handleAdd}>
+        <button className="btn btn-secondary-dark" style={{ flex: 1 }} onClick={handleAdd}>
           {added ? '✓ যোগ হয়েছে' : 'ঝুড়িতে'}
         </button>
         <button className="btn btn-haat" style={{ flex: 2 }} onClick={handleAdd}>
