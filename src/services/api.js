@@ -1,14 +1,51 @@
 // Mock API service layer — replace with real fetch later
-import { products, creators, haatEvent, categories, origins, suggestedSearches } from '../data/mockData';
+import {
+  products,
+  creators,
+  haatEvent,
+  categories,
+  origins,
+  suggestedSearches,
+  withMakerFields,
+} from '../data/mockData';
 import { enrichProductWithHaat, getHaatStatus } from '../utils/haat';
+import {
+  originsDetail,
+  getOriginBySlug as findOrigin,
+  matchProductOrigin,
+} from '../data/originsDetail';
+import { IMG } from '../data/images';
 
 const delay = (ms = 80) => new Promise((r) => setTimeout(r, ms));
 
-/** Attach creator object + Haat enrichment to a product */
+/** Process video poster by craft category (prototype — no external video host) */
+function processPosterFor(product) {
+  if (product.processVideoPoster) return product.processVideoPoster;
+  const m = (product.materialEn || product.material || '').toLowerCase();
+  if (m.includes('terracotta') || m.includes('clay') || m.includes('মাটি')) return IMG.handsClay;
+  if (m.includes('wood') || m.includes('কাঠ')) return IMG.workshop;
+  if (m.includes('textile') || m.includes('fabric') || m.includes('kantha') || m.includes('কাপ')) return IMG.textile;
+  if (m.includes('brass') || m.includes('কাংসা') || m.includes('কাঁসা')) return IMG.brass;
+  return IMG.handsPottery;
+}
+
+/** Attach creator + Haat + authenticity fields to a product */
 function enrich(product) {
   const enriched = enrichProductWithHaat(product, haatEvent);
-  const creator = creators.find((c) => c.id === product.creatorId) || null;
-  return { ...enriched, creator };
+  const rawCreator = creators.find((c) => c.id === product.creatorId) || null;
+  const creator = withMakerFields(rawCreator);
+  const isAuthentic = creator?.verificationStatus === 'verified' || product.isVerified;
+  return {
+    ...enriched,
+    creator,
+    makerStatus: isAuthentic ? 'Authentic Maker' : product.makerStatus || 'Maker',
+    processVideo: product.processVideo || null,
+    processVideoPoster: processPosterFor(product),
+    processVideoDuration: product.processVideoDuration || '00:24',
+    craftTechnique: product.technique || product.craftTechnique || product.productionMethod || null,
+    productionLocation: product.productionLocation || product.origin,
+    processDocumented: true,
+  };
 }
 
 export async function getHaatEvent() {
@@ -87,17 +124,53 @@ export async function getProductBySlug(slug) {
 
 export async function getCreators() {
   await delay();
-  return creators;
+  return creators.map(withMakerFields);
 }
 
 export async function getCreatorById(id) {
   await delay();
   const creator = creators.find((c) => c.id === id);
   if (!creator) return null;
-  const creatorProducts = products
-    .filter((p) => p.creatorId === id)
-    .map(enrich);
-  return { ...creator, products: creatorProducts };
+  const creatorProducts = products.filter((p) => p.creatorId === id).map(enrich);
+  return { ...withMakerFields(creator), products: creatorProducts };
+}
+
+export async function getOriginDetail(slug) {
+  await delay();
+  const origin = findOrigin(slug);
+  if (!origin) return null;
+  const originProducts = products.map(enrich).filter((p) => matchProductOrigin(p, origin));
+  const makerIds = [...new Set(originProducts.map((p) => p.creatorId).filter(Boolean))];
+  const makers = makerIds
+    .map((id) => creators.find((c) => c.id === id))
+    .filter(Boolean)
+    .map(withMakerFields);
+  const haatProducts = originProducts.filter((p) => p.isHaatActive);
+  return {
+    ...origin,
+    products: originProducts,
+    makers,
+    haatProducts,
+  };
+}
+
+export async function getHaatOriginSummary() {
+  await delay();
+  const haatList = products.map(enrich).filter((p) => p.isHaatActive);
+  const byOrigin = {};
+  haatList.forEach((p) => {
+    const key = p.originEn || p.origin || 'Other';
+    if (!byOrigin[key]) {
+      byOrigin[key] = { name: p.origin, nameEn: p.originEn || p.origin, count: 0 };
+    }
+    byOrigin[key].count += 1;
+  });
+  return Object.values(byOrigin).sort((a, b) => b.count - a.count);
+}
+
+export async function getOriginsDetail() {
+  await delay();
+  return originsDetail;
 }
 
 export async function getCreatorBySlug(slug) {
