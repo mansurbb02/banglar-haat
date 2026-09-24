@@ -57,6 +57,8 @@ export const origins = [
   { id: 'sylhet', name: 'সিলেট', nameEn: 'Sylhet' },
   { id: 'chattogram', name: 'চট্টগ্রাম', nameEn: 'Chattogram' },
   { id: 'bogura', name: 'বগুড়া', nameEn: 'Bogura' },
+  { id: 'rangamati', name: 'রাঙামাটি', nameEn: 'Rangamati' },
+  { id: 'mymensingh', name: 'ময়মনসিংহ', nameEn: 'Mymensingh' },
 ];
 
 export const suggestedSearches = [
@@ -68,3 +70,21 @@ export const suggestedSearches = [
   'মাত্র একটা',
   'কুষ্টিয়ার কারুশিল্প',
 ];
+
+/** Enrich creator with Authentic Maker fields (prototype) */
+export function withMakerFields(creator) {
+  if (!creator) return null;
+  const verified = !!creator.verified;
+  return {
+    ...creator,
+    origin: creator.origin || creator.location,
+    district: creator.district || creator.location,
+    craftSpecialty: creator.craftSpecialty || creator.specialty,
+    makerStatus: verified ? 'Authentic Maker' : 'Maker',
+    verificationStatus: verified ? 'verified' : 'self-declared',
+    yearsOfExperience: creator.yearsOfExperience || (verified ? 8 : 3),
+    craftTechnique: creator.craftTechnique || creator.specialty,
+    processVideoPoster: creator.processVideoPoster || null,
+    processVideoDuration: creator.processVideoDuration || '00:24',
+  };
+}
