@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import HaatCountdown from '../components/HaatCountdown';
 import { getHaatProducts, getHaatEvent } from '../services/api';
+import { IMG } from '../data/images';
 
 export default function FridayHaat() {
   const [products, setProducts] = useState([]);
@@ -15,27 +16,37 @@ export default function FridayHaat() {
 
   return (
     <main>
-      <section style={{ background: 'var(--ink)', color: 'white', padding: '32px 0' }}>
-        <div className="container">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-            <span className="live-dot" />
-            <span style={{ fontSize: 12, fontWeight: 600 }}>লাইভ</span>
-          </div>
-          <h1 style={{ fontSize: 28, marginBottom: 8, color: 'white' }}>শুক্রবারের হাট</h1>
-          <p style={{ opacity: 0.8, marginBottom: 20 }}>নতুন সৃষ্টি, মাত্র ৫ ঘণ্টার জন্য।</p>
-          {haat?.status === 'ACTIVE' && (
-            <HaatCountdown endTime={haat.endTime} label="হাট শেষ হবে" />
-          )}
-          <div style={{ marginTop: 20 }}>
-            <Link to="/friday-haat/rules" style={{ fontSize: 13, textDecoration: 'underline', opacity: 0.8 }}>
-              হাটের নিয়ম দেখুন
-            </Link>
+      <section
+        className="photo-bleed photo-bleed--mid"
+        style={{ backgroundImage: `url(${IMG.marketClose})`, minHeight: '50vh' }}
+      >
+        <div className="photo-overlay" />
+        <div className="photo-content">
+          <div className="container">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+              <span className="live-dot" />
+              <span style={{ fontFamily: 'var(--font-en)', fontSize: 12, fontWeight: 600, letterSpacing: '0.06em' }}>লাইভ</span>
+            </div>
+            <h1 className="display-md" style={{ marginBottom: 8 }}>শুক্রবারের হাট</h1>
+            <p style={{ opacity: 0.85, marginBottom: 24, maxWidth: 360 }}>
+              নতুন সৃষ্টি, মাত্র ৫ ঘণ্টার জন্য। ১০–২০% হাট ছাড়।
+            </p>
+            {haat?.status === 'ACTIVE' && (
+              <HaatCountdown endTime={haat.endTime} label="হাট শেষ হবে" light />
+            )}
+            <div style={{ marginTop: 20 }}>
+              <Link to="/friday-haat/rules" style={{ fontSize: 13, textDecoration: 'underline', opacity: 0.8 }}>
+                হাটের নিয়ম দেখুন
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" style={{ background: 'var(--cream)' }}>
         <div className="container">
+          <p className="section-label">হাটের স্টল</p>
+          <h2 className="display-md" style={{ marginBottom: 28 }}>এখন হাটে আছে</h2>
           {products.length === 0 ? (
             <div className="empty-state">
               <h3>এই সপ্তাহের হাটে এখনো কিছু আসেনি।</h3>
@@ -43,8 +54,12 @@ export default function FridayHaat() {
             </div>
           ) : (
             <div className="grid-products">
-              {products.map((p) => (
-                <ProductCard key={p.id} product={p} />
+              {products.map((p, i) => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  variant={i % 3 === 0 ? 'overlay' : i % 3 === 1 ? 'creator' : 'tag'}
+                />
               ))}
             </div>
           )}
