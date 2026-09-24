@@ -28,6 +28,14 @@ function creatorLine(product) {
   return '';
 }
 
+function isAuthenticMaker(product) {
+  return (
+    product.creator?.verificationStatus === 'verified' ||
+    product.makerStatus === 'Authentic Maker' ||
+    product.isVerified === true
+  );
+}
+
 export default function ProductCard({ product, variant = 'tag', size = 'md' }) {
   if (!product) return null;
 
@@ -41,7 +49,6 @@ export default function ProductCard({ product, variant = 'tag', size = 'md' }) {
   const w = widths[size] || 220;
   const isCarousel = ['sm', 'md', 'lg', 'xl'].includes(size);
 
-  // ── Editorial (large masonry hero card) ──
   if (variant === 'editorial') {
     return (
       <Link to={`/product/${product.slug}`} className="pcard pcard--editorial">
@@ -76,7 +83,6 @@ export default function ProductCard({ product, variant = 'tag', size = 'md' }) {
     );
   }
 
-  // ── Default tag card (uniform for grids + carousels) ──
   return (
     <Link
       to={`/product/${product.slug}`}
@@ -100,6 +106,11 @@ export default function ProductCard({ product, variant = 'tag', size = 'md' }) {
       <div className="pcard-body pcard-body--fixed">
         <h4 className="pcard-title pcard-title--clamp">{product.name}</h4>
         <p className="caption pcard-meta">{creatorLine(product)}</p>
+        {isAuthenticMaker(product) && (
+          <span className="badge badge-verified" style={{ marginTop: 6, alignSelf: 'flex-start' }}>
+            ✓ Authentic
+          </span>
+        )}
         <div className="pcard-price-row">
           {product.isHaatActive ? (
             <>
