@@ -190,10 +190,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .price-current { font-family: var(--font-en); font-weight: 700; color: var(--ink); }
 .countdown { font-family: var(--font-en); font-variant-numeric: tabular-nums; font-weight: 600; }
 
-/* Horizontal stall carousel — 30px between cards */
 .stall-scroll {
   display: flex;
-  gap: 30px;
+  gap: 16px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
@@ -212,13 +211,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .oneof-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 30px;
+  gap: 16px;
 }
 .oneof-featured { min-width: 0; }
 .oneof-side {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 30px;
+  gap: 16px;
   align-content: start;
 }
 @media (min-width: 768px) {
@@ -234,7 +233,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .masonry {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 30px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
 }
 @media (min-width: 768px) {
   .masonry { grid-template-columns: repeat(4, 1fr); gap: 30px; }
@@ -445,20 +444,20 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   display: flex; flex-direction: column; align-items: center; gap: 16px;
 }
 
-/* Product card grid — 30px horizontal + vertical between cards */
+/* Product card grid — responsive horizontal + vertical spacing */
 .grid-products {
   display: grid !important;
   grid-template-columns: 1fr 1fr;
-  gap: 30px !important;
-  row-gap: 30px !important;
-  column-gap: 30px !important;
+  gap: 16px !important;
+  row-gap: 16px !important;
+  column-gap: 16px !important;
 }
 @media (min-width: 640px) {
   .grid-products {
     grid-template-columns: repeat(3, 1fr);
-    gap: 30px !important;
-    row-gap: 30px !important;
-    column-gap: 30px !important;
+    gap: 24px !important;
+    row-gap: 24px !important;
+    column-gap: 24px !important;
   }
 }
 @media (min-width: 1024px) {
@@ -468,6 +467,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     row-gap: 30px !important;
     column-gap: 30px !important;
   }
+}
+/* Force cards to fill grid cell so gap is the real spacing */
+.grid-products > .pcard,
+.grid-products > a.pcard {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
 }
 
 .quote-block {
@@ -498,9 +504,12 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .carousel {
-  display: flex; gap: 30px; overflow-x: auto;
+  display: flex; gap: 16px; overflow-x: auto;
   scroll-snap-type: x mandatory; scrollbar-width: none;
   padding-bottom: 8px;
+}
+@media (min-width: 768px) {
+  .carousel { gap: 30px; }
 }
 .carousel::-webkit-scrollbar { display: none; }
 .carousel > * { scroll-snap-align: start; flex-shrink: 0; }
