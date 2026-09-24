@@ -1,63 +1,110 @@
 import { Link } from 'react-router-dom';
 import { formatPrice } from '../utils/haat';
+import { getProductImage } from '../data/images';
 
-const PLACEHOLDER_COLORS = ['#E8E4D9', '#D4D0C4', '#EDE9DF', '#E0DCD2', '#F0EBE3'];
-
-export default function ProductCard({ product, variant = 'default' }) {
+export default function ProductCard({ product, variant = 'tag', size = 'md' }) {
   if (!product) return null;
 
-  const color = PLACEHOLDER_COLORS[product.id.charCodeAt(1) % PLACEHOLDER_COLORS.length];
+  const img = getProductImage(product);
   const qtyLabel =
     product.productType === 'one-of-one'
       ? 'মাত্র ১টি'
       : `${product.availableQuantity}টি উপলব্ধ`;
 
+  const widths = { sm: 160, md: 220, lg: 280, xl: 340 };
+  const w = widths[size] || 220;
+
+  if (variant === 'overlay') {
+    return (
+      <Link
+        to={`/product/${product.slug}`}
+        className="pcard pcard--overlay"
+        style={{ width: size === 'carousel' || size === 'sm' || size === 'md' || size === 'lg' ? w : '100%', minWidth: size !== 'full' ? w : undefined }}
+      >
+        <div className="pcard-img">
+          <img src={img} alt={product.name} loading="lazy" />
+          <div style={{ position: 'absolute', top: 10, left: 10, display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+            {product.isHaatActive && <span className="badge badge-haat">হাট</span>}
+            {product.productType === 'one-of-one' && <span className="badge badge-quantity">১/১</span>}
+          </div>
+        </div>
+        <div className="pcard-body">
+          <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: 15, marginBottom: 4 }}>
+            {product.name}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+            {product.isHaatActive ? (
+              <>
+                <span className="price-haat" style={{ fontSize: 16, color: '#FF9F5A' }}>{formatPrice(product.haatPrice)}</span>
+                <span className="price-regular" style={{ color: 'rgba(255,255,255,0.5)' }}>{formatPrice(product.regularPrice)}</span>
+              </>
+            ) : (
+              <span style={{ fontWeight: 600, fontSize: 16 }}>{formatPrice(product.regularPrice)}</span>
+            )}
+          </div>
+        </div>
+      </Link>
+    );
+  }
+
+  if (variant === 'editorial') {
+    return (
+      <Link to={`/product/${product.slug}`} className="pcard pcard--editorial" style={{ width: '100%' }}>
+        <div className="pcard-img">
+          <img src={img} alt={product.name} loading="lazy" />
+          <div style={{ position: 'absolute', top: 10, left: 10, display: 'flex', gap: 4 }}>
+            {product.isHaatActive && <span className="badge badge-haat">শুক্রবারের হাট</span>}
+            {product.productType === 'one-of-one' && <span className="badge badge-quantity">মাত্র ১টি</span>}
+          </div>
+        </div>
+        <div className="pcard-body">
+          <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 4 }}>{product.name}</h4>
+          <p className="caption" style={{ marginBottom: 8 }}>{product.origin} · {product.creator?.name || ''}</p>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+            {product.isHaatActive ? (
+              <>
+                <span className="price-haat" style={{ fontSize: 18 }}>{formatPrice(product.haatPrice)}</span>
+                <span className="price-regular">{formatPrice(product.regularPrice)}</span>
+              </>
+            ) : (
+              <span className="price-current" style={{ fontSize: 18 }}>{formatPrice(product.regularPrice)}</span>
+            )}
+          </div>
+        </div>
+      </Link>
+    );
+  }
+
+  const isCarousel = ['carousel', 'sm', 'md', 'lg', 'xl'].includes(size);
   return (
     <Link
       to={`/product/${product.slug}`}
-      className="card"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: variant === 'carousel' ? 220 : '100%',
-        minWidth: variant === 'carousel' ? 220 : undefined,
-      }}
+      className={`pcard pcard--${variant === 'creator' ? 'creator' : 'tag'}`}
+      style={{ width: isCarousel ? w : '100%', minWidth: isCarousel ? w : undefined }}
     >
-      <div
-        style={{
-          aspectRatio: '1',
-          background: color,
-          position: 'relative',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <span style={{ fontSize: 13, color: 'var(--muted)', textAlign: 'center', padding: 12 }}>
-          {product.name}
-        </span>
+      <div className="pcard-img" style={{ aspectRatio: variant === 'creator' ? '4/5' : '1' }}>
+        <img src={img} alt={product.name} loading="lazy" />
         <div style={{ position: 'absolute', top: 8, left: 8, display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {product.isHaatActive && <span className="badge badge-haat">শুক্রবারের হাট</span>}
+          {product.isHaatActive && <span className="badge badge-haat">হাট</span>}
           {product.isHaatActive && product.haatDiscount && (
             <span className="badge badge-discount">{product.haatDiscount}% ছাড়</span>
           )}
         </div>
         {product.productType === 'one-of-one' && (
           <div style={{ position: 'absolute', top: 8, right: 8 }}>
-            <span className="badge badge-quantity">মাত্র ১টি</span>
+            <span className="badge badge-quantity">১/১</span>
           </div>
         )}
       </div>
-
-      <div style={{ padding: 12, display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
-        <h4 style={{ fontSize: 14, fontWeight: 600, lineHeight: 1.35, fontFamily: 'var(--font-heading)' }}>
+      <div className="pcard-body">
+        <h4 style={{ fontSize: 14, fontWeight: 600, lineHeight: 1.3, fontFamily: 'var(--font-heading)' }}>
           {product.name}
         </h4>
-        <p className="caption" style={{ margin: 0 }}>
+        <p className="caption" style={{ margin: '4px 0 0' }}>
           {product.creator?.name || product.origin}
           {product.origin && ` · ${product.origin}`}
         </p>
-        <div style={{ marginTop: 'auto', paddingTop: 8 }}>
+        <div style={{ marginTop: 8 }}>
           {product.isHaatActive ? (
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
               <span className="price-haat" style={{ fontSize: 16 }}>{formatPrice(product.haatPrice)}</span>
@@ -66,12 +113,10 @@ export default function ProductCard({ product, variant = 'default' }) {
           ) : (
             <span className="price-current" style={{ fontSize: 16 }}>{formatPrice(product.regularPrice)}</span>
           )}
-          <div style={{ marginTop: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ marginTop: 4, display: 'flex', justifyContent: 'space-between' }}>
             <span className="caption">{qtyLabel}</span>
             {product.isHaatActive && product.countdown && (
-              <span className="caption countdown" style={{ color: 'var(--haat-accent)' }}>
-                {product.countdown}
-              </span>
+              <span className="caption countdown" style={{ color: 'var(--haat-accent)' }}>{product.countdown}</span>
             )}
           </div>
         </div>
