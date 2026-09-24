@@ -22,25 +22,29 @@ function App() {
     <LanguageProvider>
       <CartProvider>
         <BrowserRouter>
-          <Header />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/explore" element={<Explore />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/product/:slug" element={<ProductDetail />} />
-            <Route path="/friday-haat" element={<FridayHaat />} />
-            <Route path="/friday-haat/rules" element={<HaatRules />} />
-            <Route path="/creators" element={<Creators />} />
-            <Route path="/creator/:slug" element={<CreatorProfile />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/order-success" element={<OrderSuccess />} />
-            <Route path="/become-a-creator" element={<BecomeCreator />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/origins/:slug" element={<Explore />} />
-            <Route path="/help" element={<About />} />
-          </Routes>
-          <Footer />
+          <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <Header />
+            <div style={{ flex: 1 }}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/explore" element={<Explore />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/product/:slug" element={<ProductDetail />} />
+                <Route path="/friday-haat" element={<FridayHaat />} />
+                <Route path="/friday-haat/rules" element={<HaatRules />} />
+                <Route path="/creators" element={<Creators />} />
+                <Route path="/creator/:slug" element={<CreatorProfile />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/order-success" element={<OrderSuccess />} />
+                <Route path="/become-a-creator" element={<BecomeCreator />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/origins/:slug" element={<Explore />} />
+                <Route path="/help" element={<About />} />
+              </Routes>
+            </div>
+            <Footer />
+          </div>
         </BrowserRouter>
       </CartProvider>
     </LanguageProvider>
