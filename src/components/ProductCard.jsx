@@ -1,6 +1,23 @@
 import { Link } from 'react-router-dom';
 import { formatPrice } from '../utils/haat';
-import { getProductImage } from '../data/images';
+import { getProductImage, FALLBACK_BG } from '../data/images';
+
+function SafeImg({ src, alt, style }) {
+  return (
+    <img
+      src={src}
+      alt={alt || ''}
+      loading="lazy"
+      style={style}
+      onError={(e) => {
+        e.currentTarget.style.display = 'none';
+        if (e.currentTarget.parentElement) {
+          e.currentTarget.parentElement.style.background = FALLBACK_BG;
+        }
+      }}
+    />
+  );
+}
 
 export default function ProductCard({ product, variant = 'tag', size = 'md' }) {
   if (!product) return null;
@@ -13,17 +30,18 @@ export default function ProductCard({ product, variant = 'tag', size = 'md' }) {
 
   const widths = { sm: 160, md: 220, lg: 280, xl: 340 };
   const w = widths[size] || 220;
+  const isCarousel = ['carousel', 'sm', 'md', 'lg', 'xl'].includes(size);
 
   if (variant === 'overlay') {
     return (
       <Link
         to={`/product/${product.slug}`}
         className="pcard pcard--overlay"
-        style={{ width: size === 'carousel' || size === 'sm' || size === 'md' || size === 'lg' ? w : '100%', minWidth: size !== 'full' ? w : undefined }}
+        style={{ width: isCarousel ? w : '100%', minWidth: isCarousel ? w : undefined }}
       >
-        <div className="pcard-img">
-          <img src={img} alt={product.name} loading="lazy" />
-          <div style={{ position: 'absolute', top: 10, left: 10, display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+        <div className="pcard-img" style={{ aspectRatio: '1', background: FALLBACK_BG }}>
+          <SafeImg src={img} alt={product.name} />
+          <div style={{ position: 'absolute', top: 10, left: 10, display: 'flex', gap: 4, flexWrap: 'wrap', zIndex: 1 }}>
             {product.isHaatActive && <span className="badge badge-haat">হাট</span>}
             {product.productType === 'one-of-one' && <span className="badge badge-quantity">১/১</span>}
           </div>
@@ -50,9 +68,9 @@ export default function ProductCard({ product, variant = 'tag', size = 'md' }) {
   if (variant === 'editorial') {
     return (
       <Link to={`/product/${product.slug}`} className="pcard pcard--editorial" style={{ width: '100%' }}>
-        <div className="pcard-img">
-          <img src={img} alt={product.name} loading="lazy" />
-          <div style={{ position: 'absolute', top: 10, left: 10, display: 'flex', gap: 4 }}>
+        <div className="pcard-img" style={{ aspectRatio: '3/4', background: FALLBACK_BG }}>
+          <SafeImg src={img} alt={product.name} />
+          <div style={{ position: 'absolute', top: 10, left: 10, display: 'flex', gap: 4, zIndex: 1 }}>
             {product.isHaatActive && <span className="badge badge-haat">শুক্রবারের হাট</span>}
             {product.productType === 'one-of-one' && <span className="badge badge-quantity">মাত্র ১টি</span>}
           </div>
@@ -75,23 +93,25 @@ export default function ProductCard({ product, variant = 'tag', size = 'md' }) {
     );
   }
 
-  const isCarousel = ['carousel', 'sm', 'md', 'lg', 'xl'].includes(size);
   return (
     <Link
       to={`/product/${product.slug}`}
       className={`pcard pcard--${variant === 'creator' ? 'creator' : 'tag'}`}
       style={{ width: isCarousel ? w : '100%', minWidth: isCarousel ? w : undefined }}
     >
-      <div className="pcard-img" style={{ aspectRatio: variant === 'creator' ? '4/5' : '1' }}>
-        <img src={img} alt={product.name} loading="lazy" />
-        <div style={{ position: 'absolute', top: 8, left: 8, display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <div
+        className="pcard-img"
+        style={{ aspectRatio: variant === 'creator' ? '4/5' : '1', background: FALLBACK_BG }}
+      >
+        <SafeImg src={img} alt={product.name} />
+        <div style={{ position: 'absolute', top: 8, left: 8, display: 'flex', flexDirection: 'column', gap: 4, zIndex: 1 }}>
           {product.isHaatActive && <span className="badge badge-haat">হাট</span>}
           {product.isHaatActive && product.haatDiscount && (
             <span className="badge badge-discount">{product.haatDiscount}% ছাড়</span>
           )}
         </div>
         {product.productType === 'one-of-one' && (
-          <div style={{ position: 'absolute', top: 8, right: 8 }}>
+          <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}>
             <span className="badge badge-quantity">১/১</span>
           </div>
         )}
