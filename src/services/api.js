@@ -4,6 +4,13 @@ import { enrichProductWithHaat, getHaatStatus } from '../utils/haat';
 
 const delay = (ms = 80) => new Promise((r) => setTimeout(r, ms));
 
+/** Attach creator object + Haat enrichment to a product */
+function enrich(product) {
+  const enriched = enrichProductWithHaat(product, haatEvent);
+  const creator = creators.find((c) => c.id === product.creatorId) || null;
+  return { ...enriched, creator };
+}
+
 export async function getHaatEvent() {
   await delay();
   return { ...haatEvent, ...getHaatStatus(haatEvent) };
@@ -11,13 +18,17 @@ export async function getHaatEvent() {
 
 export async function getProducts(filters = {}) {
   await delay();
-  let list = products.map((p) => enrichProductWithHaat(p, haatEvent));
+  let list = products.map(enrich);
 
   if (filters.category) {
     list = list.filter((p) => p.category === filters.category);
   }
   if (filters.origin) {
-    list = list.filter((p) => p.originEn?.toLowerCase() === filters.origin.toLowerCase() || p.origin === filters.origin);
+    list = list.filter(
+      (p) =>
+        p.originEn?.toLowerCase() === filters.origin.toLowerCase() ||
+        p.origin === filters.origin
+    );
   }
   if (filters.productType) {
     list = list.filter((p) => p.productType === filters.productType);
@@ -32,7 +43,11 @@ export async function getProducts(filters = {}) {
     list = list.filter((p) => p.productType === 'small-batch');
   }
   if (filters.material) {
-    list = list.filter((p) => p.materialEn?.toLowerCase().includes(filters.material.toLowerCase()) || p.material?.includes(filters.material));
+    list = list.filter(
+      (p) =>
+        p.materialEn?.toLowerCase().includes(filters.material.toLowerCase()) ||
+        p.material?.includes(filters.material)
+    );
   }
   if (filters.q) {
     const q = filters.q.toLowerCase();
@@ -58,7 +73,7 @@ export async function getProducts(filters = {}) {
 export async function getHaatProducts() {
   await delay();
   return products
-    .map((p) => enrichProductWithHaat(p, haatEvent))
+    .map(enrich)
     .filter((p) => p.isHaatActive)
     .slice(0, 12);
 }
@@ -67,9 +82,7 @@ export async function getProductBySlug(slug) {
   await delay();
   const product = products.find((p) => p.slug === slug);
   if (!product) return null;
-  const enriched = enrichProductWithHaat(product, haatEvent);
-  const creator = creators.find((c) => c.id === product.creatorId);
-  return { ...enriched, creator };
+  return enrich(product);
 }
 
 export async function getCreators() {
@@ -83,7 +96,7 @@ export async function getCreatorById(id) {
   if (!creator) return null;
   const creatorProducts = products
     .filter((p) => p.creatorId === id)
-    .map((p) => enrichProductWithHaat(p, haatEvent));
+    .map(enrich);
   return { ...creator, products: creatorProducts };
 }
 
@@ -108,16 +121,12 @@ export async function getSuggestedSearches() {
 
 export async function getOneOfOneProducts() {
   await delay();
-  return products
-    .filter((p) => p.productType === 'one-of-one')
-    .map((p) => enrichProductWithHaat(p, haatEvent));
+  return products.filter((p) => p.productType === 'one-of-one').map(enrich);
 }
 
 export async function getSmallBatchProducts() {
   await delay();
-  return products
-    .filter((p) => p.productType === 'small-batch')
-    .map((p) => enrichProductWithHaat(p, haatEvent));
+  return products.filter((p) => p.productType === 'small-batch').map(enrich);
 }
 
 export async function searchAll(query) {
@@ -127,7 +136,7 @@ export async function searchAll(query) {
   }
   const q = query.toLowerCase();
   const matchedProducts = products
-    .map((p) => enrichProductWithHaat(p, haatEvent))
+    .map(enrich)
     .filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
