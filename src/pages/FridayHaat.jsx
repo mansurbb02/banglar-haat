@@ -2,16 +2,18 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import HaatCountdown from '../components/HaatCountdown';
-import { getHaatProducts, getHaatEvent } from '../services/api';
+import { getHaatProducts, getHaatEvent, getHaatOriginSummary } from '../services/api';
 import { IMG } from '../data/images';
 
 export default function FridayHaat() {
   const [products, setProducts] = useState([]);
   const [haat, setHaat] = useState(null);
+  const [originSummary, setOriginSummary] = useState([]);
 
   useEffect(() => {
     getHaatEvent().then(setHaat);
     getHaatProducts().then(setProducts);
+    getHaatOriginSummary().then(setOriginSummary);
   }, []);
 
   return (
@@ -43,7 +45,44 @@ export default function FridayHaat() {
         </div>
       </section>
 
-      <section className="section" style={{ background: 'var(--cream)' }}>
+      {originSummary.length > 0 && (
+        <section style={{ background: 'var(--cream)', padding: '32px 0' }}>
+          <div className="container">
+            <p className="section-label">এই সপ্তাহে কোথা থেকে?</p>
+            <h2 style={{ fontSize: 20, marginBottom: 16, fontFamily: 'var(--font-heading)' }}>
+              বাংলাদেশের বিভিন্ন জায়গা থেকে হাটে এসেছে
+            </h2>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+              {originSummary.map((o) => {
+                const slug = (o.nameEn || o.name || '').toLowerCase().replace(/\s+/g, '');
+                return (
+                  <Link
+                    key={o.nameEn || o.name}
+                    to={`/origins/${slug}`}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      padding: '10px 16px',
+                      background: 'var(--white)',
+                      border: '1px solid var(--border)',
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: 14,
+                      fontWeight: 500,
+                    }}
+                  >
+                    <span>📍</span>
+                    <span>{o.name}</span>
+                    <span className="caption" style={{ marginLeft: 4 }}>{o.count} সৃষ্টি</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="section" style={{ background: 'var(--warm-white)' }}>
         <div className="container">
           <p className="section-label">হাটের স্টল</p>
           <h2 className="display-md" style={{ marginBottom: 28 }}>এখন হাটে আছে</h2>
@@ -54,12 +93,8 @@ export default function FridayHaat() {
             </div>
           ) : (
             <div className="grid-products">
-              {products.map((p, i) => (
-                <ProductCard
-                  key={p.id}
-                  product={p}
-                  variant={i % 3 === 0 ? 'overlay' : i % 3 === 1 ? 'creator' : 'tag'}
-                />
+              {products.map((p) => (
+                <ProductCard key={p.id} product={p} variant="tag" />
               ))}
             </div>
           )}
