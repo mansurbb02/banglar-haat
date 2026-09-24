@@ -133,14 +133,14 @@ export default function ProductDetail() {
 
   return (
     <main className="pd-page">
-      <div className="pd-hero">
-        <img src={getProductImage(product)} alt={product.name} />
-      </div>
-
       <div className="container pd-layout">
         <div className="pd-buy-mobile">{buyCard}</div>
 
         <div className="pd-left">
+          <div className="pd-hero">
+            <img src={getProductImage(product)} alt={product.name} />
+          </div>
+
           <section className="pd-section">
             <p className="section-label">পণ্যের পরিচয়</p>
             {product.description && <p className="pd-desc">{product.description}</p>}
