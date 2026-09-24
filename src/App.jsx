@@ -16,6 +16,7 @@ import OrderSuccess from './pages/OrderSuccess';
 import BecomeCreator from './pages/BecomeCreator';
 import Search from './pages/Search';
 import About from './pages/About';
+import OriginDetail from './pages/OriginDetail';
 
 function App() {
   return (
@@ -34,12 +35,12 @@ function App() {
                 <Route path="/friday-haat/rules" element={<HaatRules />} />
                 <Route path="/creators" element={<Creators />} />
                 <Route path="/creator/:slug" element={<CreatorProfile />} />
+                <Route path="/origins/:slug" element={<OriginDetail />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/order-success" element={<OrderSuccess />} />
                 <Route path="/become-a-creator" element={<BecomeCreator />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/origins/:slug" element={<Explore />} />
                 <Route path="/help" element={<About />} />
               </Routes>
             </div>
